@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    restart: always
+    volumes:
+      - ./db_data/data:/var/lib/mysql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: "Asia/Tokyo"
+  wordpress:
+    image: bitnami/wordpress:latest
+    container_name: wordpress
+    restart: always
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./wordpress_data:/bitnami/wordpress
+    depends_on:
+      - mysql
+    environment:
+      WORDPRESS_DATABASE_HOST: mysql
+      WORDPRESS_DATABASE_PORT_NUMBER: 3306
+      WORDPRESS_DATABASE_USER: ${WORDPRESS_DATABASE_USER}
+      WORDPRESS_DATABASE_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
+      WORDPRESS_DATABASE_NAME: ${WORDPRESS_DATABASE_NAME}
+volumes:
+  db_data:
+  wordpress_data:
